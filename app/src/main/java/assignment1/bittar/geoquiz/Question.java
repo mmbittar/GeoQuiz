@@ -1,7 +1,7 @@
 package assignment1.bittar.geoquiz;
 
 /**
- * Created by mmnit on 2/9/2018.
+ * Created by Marcelo Bittar on 2/9/2018.
  */
 
 public class Question {

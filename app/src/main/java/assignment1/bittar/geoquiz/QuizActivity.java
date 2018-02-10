@@ -49,6 +49,13 @@ public class QuizActivity extends AppCompatActivity {
         mQuestionText = (TextView)findViewById(R.id.question_text_view);
         int question = mQuestionBank[mCurrentIndex].getQuestionResId();
         mQuestionText.setText(question);
+        mQuestionText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                updateQuestion();
+            }
+        });
 
         mNextButton = (Button) findViewById(R.id.next_button);
         mNextButton.setOnClickListener(new View.OnClickListener() {
@@ -76,9 +83,12 @@ public class QuizActivity extends AppCompatActivity {
         else{
             messageResId = R.string.incorrect_toast;
         }
-
+        /**
+         * Challenge 1 - Make toast show up on top
+         */
         Toast toast = Toast.makeText(this,messageResId,Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.TOP,0,0);
         toast.show();
     }
+
 }
