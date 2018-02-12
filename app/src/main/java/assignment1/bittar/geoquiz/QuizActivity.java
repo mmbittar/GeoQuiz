@@ -1,3 +1,8 @@
+/**
+ * Created by Marcelo Bittar on 2/9/2018.
+ * Main Activity for the GeoQuiz app.
+ */
+
 package assignment1.bittar.geoquiz;
 
 import android.support.v7.app.AppCompatActivity;
@@ -5,6 +10,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,10 +18,13 @@ public class QuizActivity extends AppCompatActivity {
 
     private Button mTrueButton;
     private Button mFalseButton;
-    private Button mNextButton;
-    private Button mBackButton;
+    private ImageButton mNextButton;
+    private ImageButton mBackButton;
     private TextView mQuestionText;
 
+    /**
+     *  Array of Question objects containing all questions and answers of our quiz game
+     */
     private Question [] mQuestionBank = new Question[]{
             new Question(R.string.question_australia, true),
             new Question(R.string.question_oceans, true),
@@ -25,6 +34,7 @@ public class QuizActivity extends AppCompatActivity {
             new Question(R.string.question_asia, true)
     };
 
+    //Current index of our Questions array
     private int mCurrentIndex = 0;
 
     @Override
@@ -47,9 +57,13 @@ public class QuizActivity extends AppCompatActivity {
                 checkAnswer(false);
             }
         });
+
         mQuestionText = (TextView)findViewById(R.id.question_text_view);
+
         int question = mQuestionBank[mCurrentIndex].getQuestionResId();
+
         mQuestionText.setText(question);
+
         mQuestionText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,7 +72,9 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
 
-        mNextButton = (Button) findViewById(R.id.next_button);
+        mNextButton = (ImageButton) findViewById(R.id.next_button);
+
+        // Loops questions in question bank. Limits mCurrentIndex to the the length of array.
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,12 +82,14 @@ public class QuizActivity extends AppCompatActivity {
                 updateQuestion();
             }
         });
-        mBackButton = (Button) findViewById(R.id.back_button);
+        mBackButton = (ImageButton) findViewById(R.id.back_button);
+
+        // Loops questions in question bank. Limits mCurrentIndex to the the length of array.
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(mCurrentIndex == 0){
-                    mCurrentIndex = 6;
+                    mCurrentIndex = mQuestionBank.length;
                 }
                 mCurrentIndex = (mCurrentIndex - 1) % mQuestionBank.length;
                 updateQuestion();
@@ -80,11 +98,19 @@ public class QuizActivity extends AppCompatActivity {
         updateQuestion();
     }
 
+    /**
+     * Updates TextView with question stored in mQuestionBank array
+     */
     private void updateQuestion() {
         int question = mQuestionBank[mCurrentIndex].getQuestionResId();
         mQuestionText.setText(question);
     }
 
+    /**
+     * If user presses true and answer to question is true Toast shows Correct! Otherwise toast will
+     * show Incorrect!
+     * @param userPressedTrue
+     */
     private void checkAnswer(boolean userPressedTrue){
 
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isQuestionAnswerTrue();
@@ -95,11 +121,12 @@ public class QuizActivity extends AppCompatActivity {
         else{
             messageResId = R.string.incorrect_toast;
         }
+
         /**
          * Challenge 1 - Make toast show up on top
          */
         Toast toast = Toast.makeText(this,messageResId,Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.TOP,0,0);
+        toast.setGravity(Gravity.TOP,0,200);
         toast.show();
     }
 
