@@ -22,6 +22,8 @@ public class QuizActivity extends AppCompatActivity {
     private ImageButton mBackButton;
     private TextView mQuestionText;
 
+    private static final String KEY_INDEX = "index";
+
     /**
      *  Array of Question objects containing all questions and answers of our quiz game
      */
@@ -38,10 +40,18 @@ public class QuizActivity extends AppCompatActivity {
     private int mCurrentIndex = 0;
 
     @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putInt(KEY_INDEX,mCurrentIndex);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
-
+        if(savedInstanceState != null){
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX,0);
+        }
         mTrueButton = (Button) findViewById(R.id.true_button);
         mTrueButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,6 +114,14 @@ public class QuizActivity extends AppCompatActivity {
     private void updateQuestion() {
         int question = mQuestionBank[mCurrentIndex].getQuestionResId();
         mQuestionText.setText(question);
+        if(mQuestionBank[mCurrentIndex].isQuestionIsAnswered()){
+            mFalseButton.setClickable(false);
+            mTrueButton.setClickable(false);
+        }
+        else{
+            mFalseButton.setClickable(true);
+            mTrueButton.setClickable(true);
+        }
     }
 
     /**
@@ -128,6 +146,11 @@ public class QuizActivity extends AppCompatActivity {
         Toast toast = Toast.makeText(this,messageResId,Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.TOP,0,200);
         toast.show();
+
+        mQuestionBank[mCurrentIndex].setQuestionIsAnswered(true);
+
+        mFalseButton.setClickable(false);
+        mTrueButton.setClickable(false);
     }
 
 }

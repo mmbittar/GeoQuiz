@@ -10,10 +10,13 @@ package assignment1.bittar.geoquiz;
 public class Question {
     private int mQuestionResId;
     private boolean mQuestionAnswerTrue;
+    private boolean mQuestionIsAnswered;
 
     public Question(int questionResId, boolean questionAnswerTrue) {
         mQuestionResId = questionResId;
         mQuestionAnswerTrue = questionAnswerTrue;
+        mQuestionIsAnswered = false;
+
     }
 
     public int getQuestionResId() {
@@ -30,5 +33,13 @@ public class Question {
 
     public void setQuestionAnswerTrue(boolean questionAnswerTrue) {
         mQuestionAnswerTrue = questionAnswerTrue;
+    }
+
+    public boolean isQuestionIsAnswered() {
+        return mQuestionIsAnswered;
+    }
+
+    public void setQuestionIsAnswered(boolean questionIsAnswered) {
+        mQuestionIsAnswered = questionIsAnswered;
     }
 }
