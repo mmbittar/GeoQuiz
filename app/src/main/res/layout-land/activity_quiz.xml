@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/background_dark"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:background="@android:color/black">
 
     <TextView
         android:id="@+id/question_text_view"
         android:layout_width="338dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
         android:background="@android:color/darker_gray"
         android:padding="24dp"
         android:textAlignment="center"
@@ -22,6 +20,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
         android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
@@ -51,26 +50,22 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <ImageButton
+        android:id="@+id/back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/back_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="25dp"
-            android:src="@drawable/arrow_left" />
+        android:layout_gravity="bottom|start"
+        android:layout_weight="1"
+        android:src="@drawable/arrow_left" />
 
-        <ImageButton
-            android:id="@+id/next_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
-            android:layout_weight="1"
-            android:src="@drawable/arrow_right" />
-    </LinearLayout>
+    <ImageButton
+        android:id="@+id/next_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
 
-</LinearLayout>
+        android:layout_gravity="bottom|end"
+        android:layout_weight="1"
+        android:src="@drawable/arrow_right" />
+
+</FrameLayout>
