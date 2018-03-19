@@ -5,6 +5,8 @@
 
 package assignment1.bittar.geoquiz;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -14,19 +16,23 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 public class QuizActivity extends AppCompatActivity {
 
     private Button mTrueButton;
     private Button mFalseButton;
+    private Button mCheatButton;
     private ImageButton mNextButton;
     private ImageButton mBackButton;
     private TextView mQuestionText;
     private TextView mQuestAns;
+    private boolean mIsCheater;
 
 
     private static final String KEY_INDEX = "index";
     private static final String TOTAL_ANSWERED = "answered";
     private static final String CORRECT_ANSWERS = "correct";
+    private static final int REQUEST_CODE_CHEAT = 0;
 
 
     /**
@@ -47,6 +53,10 @@ public class QuizActivity extends AppCompatActivity {
     private int mCorrectAnswers = 0;
     //Total questions answered. Used to calculate grade
     private int mTotalAnswered = 0;
+    private boolean cheatArray[] = new boolean[mQuestionBank.length];
+
+
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
         super.onSaveInstanceState(savedInstanceState);
@@ -59,6 +69,10 @@ public class QuizActivity extends AppCompatActivity {
         //Saves what questions have been answered
         for(int i = 0;i<mQuestionBank.length;i++){
             savedInstanceState.putBoolean("q"+i+1,mQuestionBank[i].isQuestionIsAnswered());
+        }
+        savedInstanceState.putBoolean("didUserCheat",mIsCheater);
+        for(int i = 0;i<mQuestionBank.length;i++){
+            savedInstanceState.putBoolean("cheat"+i+1,mQuestionBank[i].isQuestionCheat());
         }
     }
 
@@ -76,7 +90,9 @@ public class QuizActivity extends AppCompatActivity {
             //Loads what questions have been answered or not
             for(int i = 0;i<mQuestionBank.length;i++){
              mQuestionBank[i].setQuestionIsAnswered(savedInstanceState.getBoolean("q"+i+1));
+             mQuestionBank[i].setQuestionCheat(savedInstanceState.getBoolean("cheat"+i+1));
             }
+            mIsCheater = savedInstanceState.getBoolean("didUserCheat",false);
 
         }
         mTrueButton = (Button) findViewById(R.id.true_button);
@@ -118,6 +134,7 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                mIsCheater = false;
                 updateQuestion();
             }
         });
@@ -134,14 +151,40 @@ public class QuizActivity extends AppCompatActivity {
                 updateQuestion();
             }
         });
+        mCheatButton = (Button)findViewById(R.id.cheat_button);
+        mCheatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Intent intent = new Intent(QuizActivity.this,CheatActivity.class);
+                boolean answerIsTrue = mQuestionBank[mCurrentIndex].isQuestionAnswerTrue();
+                Intent intent = CheatActivity.newIntent(QuizActivity.this,answerIsTrue);
+                startActivityForResult(intent,REQUEST_CODE_CHEAT);
+            }
+        });
+
+
         updateQuestion();
     }
 
-    /**
-     * Updates TextView with question stored in mQuestionBank array
-     * If question has been answered once, True and False button are hidden and text
-     * saying question has been answered shows up
-     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == REQUEST_CODE_CHEAT) {
+            if (data == null) {
+                return;
+            }
+            mIsCheater = CheatActivity.wasAnswerShown(data);
+            mQuestionBank[mCurrentIndex].setQuestionCheat(mIsCheater);
+        }
+    }
+
+        /**
+         * Updates TextView with question stored in mQuestionBank array
+         * If question has been answered once, True and False button are hidden and text
+         * saying question has been answered shows up
+         */
     private void updateQuestion() {
         int question = mQuestionBank[mCurrentIndex].getQuestionResId();
         mQuestionText.setText(question);
@@ -166,15 +209,21 @@ public class QuizActivity extends AppCompatActivity {
     private void checkAnswer(boolean userPressedTrue){
 
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isQuestionAnswerTrue();
+        mIsCheater = mQuestionBank[mCurrentIndex].isQuestionCheat();
         int messageResId = 0;
-        if(userPressedTrue == answerIsTrue){
-            messageResId = R.string.correct_toast;
-            mCorrectAnswers++;
+        if(mIsCheater) {
+            messageResId = R.string.judgment_toast;
         }
-        else{
-            messageResId = R.string.incorrect_toast;
-        }
+        else {
 
+
+            if (userPressedTrue == answerIsTrue) {
+                messageResId = R.string.correct_toast;
+                mCorrectAnswers++;
+            } else {
+                messageResId = R.string.incorrect_toast;
+            }
+        }
         /**
          * Challenge 1 - Make toast show up on top
          */

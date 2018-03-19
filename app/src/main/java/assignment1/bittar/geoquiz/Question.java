@@ -11,11 +11,14 @@ public class Question {
     private int mQuestionResId;
     private boolean mQuestionAnswerTrue;
     private boolean mQuestionIsAnswered;
+    private boolean mQuestionCheat;
 
     public Question(int questionResId, boolean questionAnswerTrue) {
         mQuestionResId = questionResId;
         mQuestionAnswerTrue = questionAnswerTrue;
         mQuestionIsAnswered = false;
+        mQuestionCheat = false;
+
 
     }
 
@@ -41,5 +44,13 @@ public class Question {
 
     public void setQuestionIsAnswered(boolean questionIsAnswered) {
         mQuestionIsAnswered = questionIsAnswered;
+    }
+
+    public boolean isQuestionCheat() {
+        return mQuestionCheat;
+    }
+
+    public void setQuestionCheat(boolean questionCheat) {
+        mQuestionCheat = questionCheat;
     }
 }
